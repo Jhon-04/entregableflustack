@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Salud - Ventas</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Nova Salud</h1>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Inicio</a></li>
+                <li><a href="inventory.html">Inventario</a></li>
+                <li><a href="sales.html" class="active">Ventas</a></li>
+                <li><button id="logoutBtn">Cerrar Sesión</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="sales">
+        <div class="sales-header">
+            <h2>Registro de Ventas</h2>
+            <button id="newSaleBtn" class="btn">Nueva Venta</button>
+        </div>
+
+        <div id="saleModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Nueva Venta</h2>
+                <div class="sale-container">
+                    <div class="product-search">
+                        <input type="text" id="productSearch" placeholder="Buscar producto...">
+                        <div id="searchResults"></div>
+                    </div>
+                    
+                    <div class="sale-details">
+                        <h3>Detalle de Venta</h3>
+                        <table id="saleItemsTable">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio</th>
+                                    <th>Subtotal</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <div class="sale-total">
+                            <strong>Total: </strong>
+                            <span id="saleTotal">0.00</span>
+                        </div>
+                        <button id="completeSaleBtn" class="btn">Completar Venta</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table id="salesTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Atendido por</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div id="saleDetailModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Detalle de Venta #<span id="saleId"></span></h2>
+                <div class="sale-info">
+                    <p><strong>Fecha: </strong><span id="saleDate"></span></p>
+                    <p><strong>Total: </strong><span id="saleTotalDetail"></span></p>
+                    <p><strong>Atendido por: </strong><span id="saleSeller"></span></p>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="saleDetailItems"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/sales.js"></script>
+</body>
+</html>

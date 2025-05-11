@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Salud - Dashboard</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Nova Salud</h1>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html" class="active">Inicio</a></li>
+                <li><a href="inventory.html">Inventario</a></li>
+                <li><a href="sales.html">Ventas</a></li>
+                <li><button id="logoutBtn">Cerrar Sesión</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="dashboard">
+        <section class="stats">
+            <div class="stat-card">
+                <h3>Productos con bajo stock</h3>
+                <p id="lowStockCount">Cargando...</p>
+            </div>
+            <div class="stat-card">
+                <h3>Ventas hoy</h3>
+                <p id="todaySales">Cargando...</p>
+            </div>
+        </section>
+
+        <section class="alerts">
+            <h2>Alertas</h2>
+            <div id="alertsContainer"></div>
+        </section>
+    </main>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/inventory.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verificar autenticación
+            if (!localStorage.getItem('token')) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Cargar datos del dashboard
+            fetchLowStockCount();
+            fetchTodaySales();
+
+            // Configurar logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            });
+        });
+
+        async function fetchLowStockCount() {
+            try {
+                const response = await fetch('http://localhost:3000/api/inventory/low-stock', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Error al obtener datos');
+                
+                const products = await response.json();
+                document.getElementById('lowStockCount').textContent = products.length;
+                
+                const alertsContainer = document.getElementById('alertsContainer');
+                if (products.length > 0) {
+                    alertsContainer.innerHTML = `
+                        <div class="alert warning">
+                            <strong>¡Atención!</strong> Tienes ${products.length} productos con bajo stock.
+                            <a href="inventory.html">Revisar inventario</a>
+                        </div>
+                    `;
+                } else {
+                    alertsContainer.innerHTML = `
+                        <div class="alert success">
+                            No hay productos con bajo stock.
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error(error);
+                document.getElementById('lowStockCount').textContent = 'Error';
+            }
+        }
+
+        async function fetchTodaySales() {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const response = await fetch(`http://localhost:3000/api/sales?date=${today}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Error al obtener datos');
+                
+                const sales = await response.json();
+                document.getElementById('todaySales').textContent = sales.length;
+            } catch (error) {
+                console.error(error);
+                document.getElementById('todaySales').textContent = 'Error';
+            }
+        }
+    </script>
+</body>
+</html>
